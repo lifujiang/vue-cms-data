@@ -1,8 +1,8 @@
 /*
 * @Author: shen
 * @Date:   2019-03-07 22:45:29
-* @Last Modified by:   shen
-* @Last Modified time: 2019-03-10 16:40:11
+* @Last Modified by:   xvvx
+* @Last Modified time: 2019-03-10 23:13:37
 */
 var Mock = require('mockjs')
 
@@ -45,8 +45,8 @@ exports.news = Mock.mock({
   }]
 })
 
-// 获取随机评论数据, 包括新闻评论, 图片评论, 商品评论等
-exports.comment = Mock.mock({
+// 获取所有随机评论数据, 包括新闻评论, 图片评论, 商品评论等
+exports.allComment = Mock.mock({
   'status': 0,
   'cmt_area|3': [{
     'artid|+1': 1,
@@ -56,4 +56,13 @@ exports.comment = Mock.mock({
       'content': '@csentence(6)'
     }]
   }]
+})
+
+// 获取某个随机评论数据
+exports.comment = Mock.mock({
+      'list|40-80': [{
+        'user_name': '@cname',
+        'add_time': '@datetime()',
+        'content': '@csentence(6)'
+      }]
 })

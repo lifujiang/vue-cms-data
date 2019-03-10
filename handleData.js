@@ -1,8 +1,8 @@
 /*
 * @Author: shen
 * @Date:   2019-03-09 10:50:24
-* @Last Modified by:   shen
-* @Last Modified time: 2019-03-10 21:14:53
+* @Last Modified by:   xvvx
+* @Last Modified time: 2019-03-10 23:31:15
 */
 
 var fs = require('fs')
@@ -20,7 +20,7 @@ function fpath (fpath) {
 
 // 封装随机数据写入 json 文件持久化
 function writeData (name, data) {
-  fs.writeFile(path.join(__dirname, 'data/' + name + '.json'), data, (err) => {
+  fs.writeFile(path.join(__dirname, 'data/' + name + '.json'), JSON.stringify(data), (err) => {
     if (err) return err
     console.log('文件已修改')
   })
@@ -101,15 +101,50 @@ exports.setNews = function (cb) {
   var data = GetData[name]
   // 处理新闻列表数据, 从新闻数据中提取新闻列表数据并写入 json 中
   newsList(data, function (cdata) {
-    var err = writeData('newsList', JSON.stringify(cdata))
+    var err = writeData('newsList', cdata)
     if (err) cb(err)
   })
   // 处理新闻详情数据, 从新闻数据中提取新闻详情数据并写入 json 中
   newsDetail(data, function (cdata) {
-    var err = writeData('newsDetail', JSON.stringify(cdata))
+    var err = writeData('newsDetail', cdata)
     if (err) cb(err)
   })
   cb(null, len)
+}
+
+// 从评论随机数据中提取相应(新闻, 图片, 产品)评论数据并分别写入 json 中
+exports.setComment = function (artid, cb) {
+  /*artid代表不同区域的评论, 0为所有区域, 1为新闻, 2为图片, 3为商品*/
+  // 通过 if 判断是否为修改所有评论
+  if (artid === 0) {
+    var adata = GetData['allComment']
+    // 直接将获取的所有数据写入 json 中
+    var err = writeData('comment', adata)
+    if (err) cb(err)
+    cb(null, '很长', '所有评论')
+  }
+  // 读取评论的 json 文件
+  fs.readFile(fpath('data/comment.json'), 'utf-8', function (rerr, cmtdata) {
+    if (rerr) cb(rerr)
+    // 将下列变量定义在读文件内部代表如果读取失败也就没有必要获取假数据了
+    var name = 'comment'
+    var data = GetData[name]
+    // 格式化读取的数据
+    cmtdata = JSON.parse(cmtdata)
+    var list = data.list
+    // 匹配 artid 相同的项, 并将新获取的假数据代替原来的
+    for (var item of cmtdata.cmt_area) {
+      if (item.artid === artid) item.list = list
+    }
+    var len = list.length
+    // 将修改后的数据重新写回 json 文件
+    var werr = writeData('comment', cmtdata)
+    if (werr) cb(werr)
+    // 通过 if 和三元表达式判断评论的区域
+    var cname = '新闻评论'
+    if (artid !== 1) artid === 2 ? (cname = '图片评论') : (cname = '商品评论')
+    cb(null, len, cname)
+  })
 }
 
 // 获取轮播图
@@ -139,12 +174,3 @@ exports.getNewsDetail = function (id, cb) {
     cb(null, data)
   })
 }
-
-// 从评论随机数据中提取相应(新闻, 图片, 产品)评论数据
-// exports.newsComment = function (data, artid, cb) {
-
-//   var list = data.cmt_area.find((item) => {
-//     console.log(parseInt(artid))
-//     return item.artid === parseInt(artid)
-//   })
-// }

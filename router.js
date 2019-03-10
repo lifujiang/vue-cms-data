@@ -1,8 +1,8 @@
 /*
 * @Author: shen
 * @Date:   2019-03-07 22:45:21
-* @Last Modified by:   shen
-* @Last Modified time: 2019-03-10 21:18:09
+* @Last Modified by:   xvvx
+* @Last Modified time: 2019-03-10 23:18:38
 */
 
 // 引入模块
@@ -17,8 +17,8 @@ var HandlerData = require('./handleData.js')
 // 封装渲染页面
 function renderPage (res, len, name) {
   res.render('index.html', {
-    len: '已修改, 长度为' + len,
-    name: name
+    len:  len,
+    name: name + '已修改, 长度'
   })
 }
 
@@ -55,17 +55,12 @@ router.get('/setNews', function (req, res) {
 // 获取评论数据并永久化
 router.get('/setComment', function (req, res) {
   var artid = req.query.artid
-  var name = 'comment'
-  var data = GetData[name]
-  // fs.readFile(fpath('data/comment.json'), 'utf-8', function (err, data) {
-  //   if (err) throw err
-  // })
-  // var len = 1
-  // HandlerData.newsComment(data, artid, function (cdata) {
-
-  // })
-  // 渲染页面
-  // renderPage(res, len, '轮播图')
+  // 在传评论区域 id 时注意转格式
+  HandlerData.setComment(parseInt(artid), function (err, len, name) {
+    if (err) throw err
+    // 渲染页面
+    renderPage(res, len, name)
+  })
 })
 
 /*****接口路由*****/
@@ -82,6 +77,7 @@ router.get('/lunbo', function (req, res) {
 // 新闻列表接口
 router.get('/getNewsList', function (req, res) {
   HandlerData.getNewsList(function (err, data) {
+    if (err) throw err
     res.status(200).send(data)
   })
 })
@@ -89,7 +85,8 @@ router.get('/getNewsList', function (req, res) {
 // 新闻详情接口
 router.get('/getNewsDetail', function (req, res) {
   var id = req.query.id
-  HandlerData.getNewsDetail(id, function (err, data) {
+  // 同样注意 id 的格式
+  HandlerData.getNewsDetail(parseInt(id), function (err, data) {
     if (err) throw err
     res.status(200).send(data)
   })
