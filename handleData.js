@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-09 10:50:24
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-11 01:12:22
+* @Last Modified time: 2019-03-11 03:40:24
 */
 
 var fs = require('fs')
@@ -134,7 +134,7 @@ exports.getLunbo = function (cb) {
 exports.getNewsList = function (cb) {
   fs.readFile(fpath('data/newsList.json'), 'utf-8', function (err, data) {
     if (err) cb(err)
-    cb(null, err)
+    cb(null, data)
   })
 }
 
@@ -142,11 +142,32 @@ exports.getNewsList = function (cb) {
 exports.getNewsDetail = function (id, cb) {
   fs.readFile(fpath('data/newsDetail.json'), 'utf-8', function (err, data) {
     if (err) cb(err)
-    var list = JSON.parse(data).list
+    // 将 json 格式转为对象
+    data = JSON.parse(data)
+    var list = data.list
     // 通过 ES6 数组的新方法 find 遍历找到内部相同 id 的项并返回
     data.list = list.find((item) => {
       return item.id === id
     })
     cb(null, data)
+  })
+}
+
+exports.getComment = function (artid, pageIndex, cb) {
+  fs.readFile(fpath('data/comment.json'), 'utf-8', function (err, data) {
+    if (err) cb(err)
+    // 根据不同 id 筛选出相应的评论
+    data = JSON.parse(data).cmt_area.find((item) => {
+      return item.artid === artid
+    })
+    // 计算每页显示 10 条内容
+    var pageMin = (pageIndex - 1) * 10
+    var pageMax = pageIndex * 10
+    var list = data.list.slice(pageMin, pageMax)
+    // 创建新的对象并传回
+    var res = {}
+    res.status = 0
+    res.list = list
+    cb(null, res)
   })
 }

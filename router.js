@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:21
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-11 01:12:54
+* @Last Modified time: 2019-03-11 02:16:50
 */
 
 // 引入模块
@@ -83,6 +83,16 @@ router.get('/getNewsDetail', function (req, res) {
   var id = req.query.id
   // 同样注意 id 的格式
   HandlerData.getNewsDetail(parseInt(id), function (err, data) {
+    if (err) throw err
+    res.status(200).send(data)
+  })
+})
+
+// 评论接口
+router.get('/getComment', function (req, res) {
+  var artid = req.query.artid
+  var pageIndex = req.query.pageIndex
+  HandlerData.getComment(parseInt(artid), parseInt(pageIndex), function (err, data) {
     if (err) throw err
     res.status(200).send(data)
   })
