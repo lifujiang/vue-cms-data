@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-09 10:50:24
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-11 00:08:37
+* @Last Modified time: 2019-03-11 01:12:22
 */
 
 var fs = require('fs')
@@ -88,8 +88,8 @@ function newsDetail (data) {
 // 轮播图 --- 从 mockjs 获取随机轮播图数据并写入 json 中
 exports.setLunbo = function (cb) {
   var name = 'lunbo'
-  var len = GetData[name].list.length
-  var data = JSON.stringify(GetData[name])
+  var data = GetData[name]
+  var len = data.list.length
   // 将轮播图随机数据写入文件
   var err = writeData(name, data)
   if (err) cb(err)
@@ -99,8 +99,8 @@ exports.setLunbo = function (cb) {
 // 新闻 --- 从 mockjs 获取随机新闻数据并写入 json 中
 exports.setNews = function (cb) {
   var name = 'news'
-  var len = GetData[name].list.length
   var data = GetData[name]
+  var len = data.list.length
   // 处理新闻列表数据, 从新闻数据中提取新闻列表数据并写入 json 中
   var cdata = newsList(data)
   var err = writeData('newsList', cdata)
@@ -112,39 +112,14 @@ exports.setNews = function (cb) {
   cb(null, len)
 }
 
-// 评论 --- 从 mockjs 获取随机评论并写入 json 中, 可以是单独区域的评论(包括新闻评论, 图片评论, 商品评论), 也可以是全部评论一起写入
+// 评论 --- 从 mockjs 获取随机评论并写入 json 中
 exports.setComment = function (artid, cb) {
-  /* artid代表不同区域的评论, 0为所有区域, 1为新闻, 2为图片, 3为商品 */
-  // 通过 if 判断是否为修改所有评论
-  if (artid === 0) {
-    var adata = GetData['allComment']
-    // 直接将获取的所有数据写入 json 中
-    var err = writeData('comment', adata)
-    if (err) cb(err)
-    cb(null, '很长', '所有评论')
-  }
-  // 读取评论的 json 文件
-  fs.readFile(fpath('data/comment.json'), 'utf-8', function (err, cmtdata) {
-    if (err) cb(err)
-    // 将下列变量定义在读文件内部代表如果读取失败也就没有必要获取假数据了
-    var name = 'comment'
-    var data = GetData[name]
-    // 格式化读取的数据
-    cmtdata = JSON.parse(cmtdata)
-    var list = data.list
-    // 匹配 artid 相同的项, 并将新获取的假数据代替原来的
-    for (var item of cmtdata.cmt_area) {
-      if (item.artid === artid) item.list = list
-    }
-    var len = list.length
-    // 将修改后的数据重新写回 json 文件
-    err = writeData('comment', cmtdata)
-    if (err) cb(err)
-    // 通过 if 和三元表达式判断评论的区域
-    var cname = '新闻评论'
-    if (artid !== 1) artid === 2 ? (cname = '图片评论') : (cname = '商品评论')
-    cb(null, len, cname)
-  })
+  var name = 'comment'
+  var data = GetData[name]
+  // 将所有评论写入文件
+  var err = writeData(name, data)
+  if (err) cb(err)
+  cb(null, '很长')
 }
 
 // 轮播图接口 --- 从文件获取轮播图数据并作为接口数据

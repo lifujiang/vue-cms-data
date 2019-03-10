@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:29
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-10 23:13:37
+* @Last Modified time: 2019-03-11 01:13:26
 */
 var Mock = require('mockjs')
 
@@ -34,7 +34,7 @@ exports.lunbo = Mock.mock({
 // 获取随机新闻数据
 exports.news = Mock.mock({
   'status': 0,
-  'list|20-45': [{
+  'list|25': [{
     'id|+1': 1,
     'title': '@newsTitle()',
     'subtitle': '@ctitle(8, 13)',
@@ -46,9 +46,9 @@ exports.news = Mock.mock({
 })
 
 // 获取所有随机评论数据, 包括新闻评论, 图片评论, 商品评论等
-exports.allComment = Mock.mock({
+exports.comment = Mock.mock({
   'status': 0,
-  'cmt_area|3': [{
+  'cmt_area|25': [{
     'artid|+1': 1,
     'list|40-80': [{
       'user_name': '@cname',
@@ -56,13 +56,4 @@ exports.allComment = Mock.mock({
       'content': '@csentence(6)'
     }]
   }]
-})
-
-// 获取某个随机评论数据
-exports.comment = Mock.mock({
-      'list|40-80': [{
-        'user_name': '@cname',
-        'add_time': '@datetime()',
-        'content': '@csentence(6)'
-      }]
 })

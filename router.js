@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:21
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-10 23:53:18
+* @Last Modified time: 2019-03-11 01:12:54
 */
 
 // 引入模块
@@ -53,10 +53,10 @@ router.get('/setNews', function (req, res) {
 router.get('/setComment', function (req, res) {
   var artid = req.query.artid
   // 在传评论区域 id 时注意转格式
-  HandlerData.setComment(parseInt(artid), function (err, len, name) {
+  HandlerData.setComment(parseInt(artid), function (err, len) {
     if (err) throw err
     // 渲染页面
-    renderPage(res, len, name)
+    renderPage(res, len, '评论')
   })
 })
 
