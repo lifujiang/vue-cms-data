@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:29
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-11 02:40:46
+* @Last Modified time: 2019-03-11 13:11:07
 */
 var Mock = require('mockjs')
 
@@ -51,7 +51,6 @@ exports.comment = Mock.mock({
   'cmt_area|25': [{
     'artid|+1': 1,
     'list|40-80': [{
-      'id|+1': 1,
       'user_name': '@cname',
       'add_time': '@datetime()',
       'content': '@csentence(6)'

@@ -2,12 +2,13 @@
 * @Author: shen
 * @Date:   2019-03-09 10:50:24
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-11 03:40:24
+* @Last Modified time: 2019-03-11 14:09:55
 */
 
 var fs = require('fs')
 var path = require('path')
 var GetData = require('./makeData.js')
+var moment = require('moment')
 
 //////////
 // 函数封装 //
@@ -153,6 +154,7 @@ exports.getNewsDetail = function (id, cb) {
   })
 }
 
+// 获取随机评论假数据
 exports.getComment = function (artid, pageIndex, cb) {
   fs.readFile(fpath('data/comment.json'), 'utf-8', function (err, data) {
     if (err) cb(err)
@@ -169,5 +171,35 @@ exports.getComment = function (artid, pageIndex, cb) {
     res.status = 0
     res.list = list
     cb(null, res)
+  })
+}
+
+// 提交评论
+exports.postComment = function (data, cb) {
+  fs.readFile(fpath('data/comment.json'), 'utf-8', function (err, fdata) {
+    if (err) cb(err)
+    fdata = JSON.parse(fdata)
+    var artid = parseInt(data.artid)
+    // 通过 moment 模块获取当前时间
+    var now = moment().format('YYYY-M-D HH:mm:ss')
+    // 遍历得到相同区域的评论
+    var res = fdata.cmt_area.find((item) => {
+      if (artid === item.artid) return item
+    })
+    // 将获取的评论数据放入对象中
+    var cmt = {}
+    cmt.user_name = data.cmt_name
+    cmt.content = data.cmt_content
+    cmt.add_time = now
+    // 将获取的评论 push 进该区域评论中
+    res.list.unshift(cmt)
+    // 通过遍历的方式将新的区域评论覆盖原来的
+    for (var item of fdata.cmt_area) {
+      if (item.artid === artid) item = res
+    }
+    // 写入 json 中
+    writeData('comment', fdata)
+    // 这里一定要调用回调函数, 否则将出不去了!!!
+    cb()
   })
 }

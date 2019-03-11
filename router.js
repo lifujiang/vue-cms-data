@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:21
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-11 02:16:50
+* @Last Modified time: 2019-03-11 14:04:14
 */
 
 // 引入模块
@@ -66,7 +66,7 @@ router.get('/setComment', function (req, res) {
 router.get('/lunbo', function (req, res) {
   HandlerData.getLunbo(function (err, data) {
     if (err) throw err
-    res.status(200).send(data)
+    res.send(data)
   })
 })
 
@@ -74,7 +74,7 @@ router.get('/lunbo', function (req, res) {
 router.get('/getNewsList', function (req, res) {
   HandlerData.getNewsList(function (err, data) {
     if (err) throw err
-    res.status(200).send(data)
+    res.send(data)
   })
 })
 
@@ -84,7 +84,7 @@ router.get('/getNewsDetail', function (req, res) {
   // 同样注意 id 的格式
   HandlerData.getNewsDetail(parseInt(id), function (err, data) {
     if (err) throw err
-    res.status(200).send(data)
+    res.send(data)
   })
 })
 
@@ -94,7 +94,15 @@ router.get('/getComment', function (req, res) {
   var pageIndex = req.query.pageIndex
   HandlerData.getComment(parseInt(artid), parseInt(pageIndex), function (err, data) {
     if (err) throw err
-    res.status(200).send(data)
+    res.send(data)
+  })
+})
+
+// 提交评论
+router.post('/postComment', function (req, res) {
+  HandlerData.postComment(req.body, function (err) {
+    if (err) throw err
+    res.send({ message: 'ok', status: 0 })
   })
 })
 
