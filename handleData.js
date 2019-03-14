@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-09 10:50:24
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-11 14:09:55
+* @Last Modified time: 2019-03-14 14:18:54
 */
 
 var fs = require('fs')
@@ -86,7 +86,9 @@ function newsDetail (data) {
 // 功能逻辑区域 //
 //////////
 
-// 轮播图 --- 从 mockjs 获取随机轮播图数据并写入 json 中
+/***** 生成假数据 *****/
+
+// 轮播据 --- 从 mockjs 获取随机轮播图数据并写入 json 中
 exports.setLunbo = function (cb) {
   var name = 'lunbo'
   var data = GetData[name]
@@ -110,7 +112,7 @@ exports.setNews = function (cb) {
   cdata = newsDetail(data)
   err = writeData('newsDetail', cdata)
   if (err) cb(err)
-  cb(null, len)
+  cb(null, '固定为' + len)
 }
 
 // 评论 --- 从 mockjs 获取随机评论并写入 json 中
@@ -121,6 +123,47 @@ exports.setComment = function (artid, cb) {
   var err = writeData(name, data)
   if (err) cb(err)
   cb(null, '很长')
+}
+
+// 图片类型 --- 从 mockjs 获取随机图片类型并写入 json 中
+exports.setImgCate = function (cb) {
+  var name = 'imgCate'
+  var data = GetData[name]
+  var len = data.list.length
+  var err = writeData(name, data)
+  if (err) cb(err)
+  cb(null, '固定为' + len)
+}
+
+// 图片列表 --- 从 mockjs 获取随机图片列表并写入 json 中
+exports.setImgList = function (cb) {
+  var name = 'imgList'
+  var data = GetData[name]
+  var err = writeData(name, data)
+  if (err) cb(err)
+  cb(null, '很长')
+}
+
+/***** 接口 *****/
+
+// 评论接口 --- 获取随机评论数据
+exports.getComment = function (artid, pageIndex, cb) {
+  fs.readFile(fpath('data/comment.json'), 'utf-8', function (err, data) {
+    if (err) cb(err)
+    // 根据不同 id 筛选出相应的评论
+    data = JSON.parse(data).cmt_area.find((item) => {
+      return item.artid === artid
+    })
+    // 计算每页显示 10 条内容
+    var pageMin = (pageIndex - 1) * 10
+    var pageMax = pageIndex * 10
+    var list = data.list.slice(pageMin, pageMax)
+    // 创建新的对象并传回
+    var res = {}
+    res.status = 0
+    res.list = list
+    cb(null, res)
+  })
 }
 
 // 轮播图接口 --- 从文件获取轮播图数据并作为接口数据
@@ -154,25 +197,39 @@ exports.getNewsDetail = function (id, cb) {
   })
 }
 
-// 获取随机评论假数据
-exports.getComment = function (artid, pageIndex, cb) {
-  fs.readFile(fpath('data/comment.json'), 'utf-8', function (err, data) {
+// 图片类型接口 --- 从文件获取随机图片类型数据
+exports.getImgCate = function (cb) {
+  fs.readFile(fpath('data/imgCate.json'), 'utf-8', function (err, data) {
     if (err) cb(err)
-    // 根据不同 id 筛选出相应的评论
-    data = JSON.parse(data).cmt_area.find((item) => {
-      return item.artid === artid
-    })
-    // 计算每页显示 10 条内容
-    var pageMin = (pageIndex - 1) * 10
-    var pageMax = pageIndex * 10
-    var list = data.list.slice(pageMin, pageMax)
-    // 创建新的对象并传回
-    var res = {}
-    res.status = 0
-    res.list = list
-    cb(null, res)
+    cb(null, data)
   })
 }
+
+// 图片列表接口 --- 从文件获取随机图片列表数据
+exports.getImgList = function (cateid, cb) {
+  fs.readFile(fpath('data/imgList.json'), 'utf-8', function (err, data) {
+    if (err) cb(err)
+    var cateList = JSON.parse(data).cate
+    if (cateid === 0) {
+      var allList = []
+      for (const cate of cateList) {
+        for (const item of cate.list) {
+          allList.push(item)
+        }
+      }
+      allList.status = 0
+      console.log(allList)
+      cb(null, allList)
+    }
+    var oneList = cateList.find(item => {
+      return item.cateid === cateid
+    })
+    if (oneList) oneList.status = 0
+    cb(null, oneList)
+  })
+}
+
+/***** 其他 *****/
 
 // 提交评论
 exports.postComment = function (data, cb) {

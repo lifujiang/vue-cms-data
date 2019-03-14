@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:29
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-11 13:11:07
+* @Last Modified time: 2019-03-14 14:09:09
 */
 var Mock = require('mockjs')
 
@@ -54,6 +54,29 @@ exports.comment = Mock.mock({
       'user_name': '@cname',
       'add_time': '@datetime()',
       'content': '@csentence(6)'
+    }]
+  }]
+})
+
+// 随机获取图片类型
+exports.imgCate = Mock.mock({
+  'status': 0,
+  'list|7': [{
+    'cateid|+1': 1,
+    'title': '@ctitle(4)'
+  }]
+})
+
+// 随机获取图片列表
+exports.imgList = Mock.mock({
+  'status': 0,
+  'cate|7': [{
+    'cateid|+1': 1,
+    'list|8-16': [{
+      'id|+1': 26, // 这里必须从26开始, 否则获取不到相应评论
+      'title': '@ctitle(8)',
+      'img': '@img(900x500, image)',
+      'zhaiyao': '@csentence(45)'
     }]
   }]
 })
