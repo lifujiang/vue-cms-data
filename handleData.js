@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-09 10:50:24
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-14 14:18:54
+* @Last Modified time: 2019-03-14 14:39:58
 */
 
 var fs = require('fs')
@@ -209,23 +209,28 @@ exports.getImgCate = function (cb) {
 exports.getImgList = function (cateid, cb) {
   fs.readFile(fpath('data/imgList.json'), 'utf-8', function (err, data) {
     if (err) cb(err)
+    // 获取分类列表并转格式
     var cateList = JSON.parse(data).cate
-    if (cateid === 0) {
-      var allList = []
+    // 判断获取单个列表或全部列表
+    if (cateid === 0) { // 0 为获取全部列表
+      var allList = {}
+      allList.list = []
+      // 嵌套循环获取单个图片内容列表中单个内容的对象, 并 push 进数组内
       for (const cate of cateList) {
         for (const item of cate.list) {
-          allList.push(item)
+          allList.list.push(item)
         }
       }
       allList.status = 0
-      console.log(allList)
       cb(null, allList)
+    } else { // 获取单个列表
+      // 通过 find 返回相对应的列表内容
+      var oneList = cateList.find(item => {
+        return item.cateid === cateid
+      })
+      oneList.status = 0
+      cb(null, oneList)
     }
-    var oneList = cateList.find(item => {
-      return item.cateid === cateid
-    })
-    if (oneList) oneList.status = 0
-    cb(null, oneList)
   })
 }
 
