@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-09 10:50:24
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-14 14:39:58
+* @Last Modified time: 2019-03-19 12:03:25
 */
 
 var fs = require('fs')
@@ -27,57 +27,28 @@ function writeData (name, data) {
   })
 }
 
-// 提取新闻列表 --- 从新闻随机数据中提取新闻列表的数据
-function newsList (data) {
+// 获取指定对象 --- 封装随机数据获取相应信息对象
+function spcfObj (nameList, data) {
+  // 该数组存放每次循环后得到的对象 (push入内)
   var list = []
+  // 该对象为最终结果, 存放着返回状态和指定对象的数组
   var newData = {}
-  // 第一次循环遍历数组里的每一个对象
-  for (var obj of data.list) {
-    // 对象必须定义在内部, 否则 push 时会出问题
-    var newsObj = {
-      id: '',
-      img: '',
-      title: '',
-      date: '',
-      click: ''
+  for (var obj of data) {
+    // 该对象为获取指定键值对数据, 必须在循环内定义, 否则最后 push 时保存的数据为相同的结果(最后的结果)
+    var newObj = {}
+    // 循环为每一项需要的对象键赋空值
+    for (var nameItem of nameList) {
+      newObj[nameItem] = ''
     }
-    // 第二次循环遍历对象里的每一个键值对
+    // 循环判断所需要的键值对是否定义, 定义则赋值
     for (var item in obj) {
-      // 当所需属性存在则获取
-      if (newsObj[item] !== undefined) newsObj[item] = obj[item]
+      if (newObj[item] !== undefined) newObj[item] = obj[item]
     }
-    // 将完整的一个对象 push 进数组
-    list.push(newsObj)
+    // 通过 push 将得到的对象存入数组内
+    list.push(newObj)
   }
-  // 获取原数据的 static
-  newData.status = data.status
-  newData.list = list
-  // 回调传数据回去
-  return newData
-}
-
-// 提取新闻详情 --- 从新闻随机数据中提取新闻详情的数据
-function newsDetail (data) {
-  var list = []
-  var newData = {}
-  // 这里的操作同上
-  for (var obj of data.list) {
-    var newsObj = {
-      id: '',
-      title: '',
-      subtitle: '',
-      date: '',
-      click: '',
-      content: ''
-    }
-    for (var item in obj) {
-      if (newsObj[item] !== undefined) newsObj[item] = obj[item]
-    }
-    // console.log(obj)
-    list.push(newsObj)
-  }
-  // console.log(list)
-  newData.status = data.status
+  // 将最终结果和状态存入 newData 中并返回
+  newData.status = 0
   newData.list = list
   return newData
 }
@@ -104,12 +75,15 @@ exports.setNews = function (cb) {
   var name = 'news'
   var data = GetData[name]
   var len = data.list.length
+  // 使用数组将需要赋值的对象键名保存
+  var newsListName = ['id', 'img', 'title', 'date', 'click']
+  var newsDetailName = ['id', 'title', 'subtitle', 'date', 'click', 'content']
   // 处理新闻列表数据, 从新闻数据中提取新闻列表数据并写入 json 中
-  var cdata = newsList(data)
+  var cdata = spcfObj(newsListName, data.list)
   var err = writeData('newsList', cdata)
   if (err) cb(err)
   // 处理新闻详情数据, 从新闻数据中提取新闻详情数据并写入 json 中
-  cdata = newsDetail(data)
+  cdata = spcfObj(newsDetailName, data.list)
   err = writeData('newsDetail', cdata)
   if (err) cb(err)
   cb(null, '固定为' + len)

@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:29
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-14 14:09:09
+* @Last Modified time: 2019-03-19 10:43:37
 */
 var Mock = require('mockjs')
 
@@ -48,7 +48,7 @@ exports.news = Mock.mock({
 // 获取所有随机评论数据, 包括新闻评论, 图片评论, 商品评论等
 exports.comment = Mock.mock({
   'status': 0,
-  'cmt_area|25': [{
+  'cmt_area|95': [{
     'artid|+1': 1,
     'list|40-80': [{
       'user_name': '@cname',
@@ -72,11 +72,33 @@ exports.imgList = Mock.mock({
   'status': 0,
   'cate|7': [{
     'cateid|+1': 1,
-    'list|8-16': [{
+    'list|10': [{
       'id|+1': 26, // 这里必须从26开始, 否则获取不到相应评论
-      'title': '@ctitle(8)',
-      'img': '@img(900x500, image)',
-      'zhaiyao': '@csentence(45)'
+      'title': '@ctitle(24)',
+      'img': '@img(350x450, image)',
+      'content': '@csentence(120)',
+      'date': '@datetime()',
+      'click': '@integer(20, 10000)'
+    }]
+  }]
+})
+
+// 随机获取图片信息
+exports.imgInfo = Mock.mock({
+  'status': 0,
+  'list|70': [{
+    'id|+1': 26,
+    'content': '@csentence(40)'
+  }]
+})
+
+// 随机获取图片缩略图
+exports.imgPreview = Mock.mock({
+  'status': 0,
+  'list|70': [{
+    'id|+1': 26,
+    'list': [{
+      'img': '@img(640x480, imgDetail)'
     }]
   }]
 })
