@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-09 10:50:24
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-19 12:03:25
+* @Last Modified time: 2019-03-20 15:36:47
 */
 
 var fs = require('fs')
@@ -48,7 +48,6 @@ function spcfObj (nameList, data) {
     list.push(newObj)
   }
   // 将最终结果和状态存入 newData 中并返回
-  newData.status = 0
   newData.list = list
   return newData
 }
@@ -99,7 +98,7 @@ exports.setComment = function (artid, cb) {
   cb(null, '很长')
 }
 
-// 图片类型 --- 从 mockjs 获取随机图片类型并写入 json 中
+// 图片类型 --- 从 mockjs 获取7 个图片类型并写入json中
 exports.setImgCate = function (cb) {
   var name = 'imgCate'
   var data = GetData[name]
@@ -109,9 +108,55 @@ exports.setImgCate = function (cb) {
   cb(null, '固定为' + len)
 }
 
-// 图片列表 --- 从 mockjs 获取随机图片列表并写入 json 中
-exports.setImgList = function (cb) {
-  var name = 'imgList'
+// 图片 --- 从 mockjs 获取随机图片信息并分别写入图片列表和图片详情的 json 中
+exports.setImg = function (cb) {
+  var name = 'img'
+  var data = GetData[name]
+  // 对象需要提取的键名
+  var imgListName = ['id', 'title', 'img', 'zhaiyao']
+  var imgDetailName = ['id', 'title', 'date', 'click', 'content']
+  // 最外层数组 cate
+  var cateData = []
+  // 最终数据
+  var imgListData = {}
+  var imgDetailData = {}
+  // 由于图片的显示需要 cateid 验证, 所以生成的图片假数据是在 cate 数组中, 需要先循环外层 cate 数组, 拿到所有数据后
+  // 再对里面的数据进行提取
+  for (let item of data.cate) {
+    // 临时变量, 用来存储每次提取的对象值, 并 push 入数组内
+    var listTempData = {}
+    // 获取 cateid
+    listTempData.cateid = item.cateid
+    // 获取最里层的 list 数据, 并将这个对象 push 进 cate 中
+    listTempData.list = spcfObj(imgListName, item.list).list
+    cateData.push(listTempData)
+  }
+  // 提取的最终数据
+  imgListData.cate = cateData
+  // 将最终数据写入文件
+  var err = writeData('imgList', imgListData)
+  if (err) cb(err)
+  // 图片详情临时数据
+  var detailTempData = []
+  // 这里获取数据的验证方式为 id, 所以外层的 cate 不需要存入文件中
+  for (let item of data.cate) {
+    // 获取需提取的对象数组
+    var oneList = spcfObj(imgDetailName, item.list).list
+    // 将每个数组循环得到单个对象并将每个对象放入一个数组中
+    for (let oneItem of oneList) {
+      detailTempData.push(oneItem)
+    }
+  }
+  // 提取的最终数据
+  imgDetailData.list = detailTempData
+  err = writeData('imgDetail', imgDetailData)
+  if (err) cb(err)
+  cb(null, '很长')
+}
+
+// 图片缩略图 --- 从 mockjs 获取随机图片缩略图列表并写入 json 中
+exports.setImgPreview = function (cb) {
+  var name = 'imgPreview'
   var data = GetData[name]
   var err = writeData(name, data)
   if (err) cb(err)
@@ -144,7 +189,9 @@ exports.getComment = function (artid, pageIndex, cb) {
 exports.getLunbo = function (cb) {
   fs.readFile(fpath('data/lunbo.json'), 'utf-8', function (err, data) {
     if (err) cb(err)
-    cb(null, data)
+    var res = JSON.parse(data)
+    res.status = 0
+    cb(null, res)
   })
 }
 
@@ -152,7 +199,9 @@ exports.getLunbo = function (cb) {
 exports.getNewsList = function (cb) {
   fs.readFile(fpath('data/newsList.json'), 'utf-8', function (err, data) {
     if (err) cb(err)
-    cb(null, data)
+    var res = JSON.parse(data)
+    res.status = 0
+    cb(null, res)
   })
 }
 
@@ -164,18 +213,22 @@ exports.getNewsDetail = function (id, cb) {
     data = JSON.parse(data)
     var list = data.list
     // 通过 ES6 数组的新方法 find 遍历找到内部相同 id 的项并返回
-    data.list = list.find((item) => {
+    var res = {}
+    res.list = list.find((item) => {
       return item.id === id
     })
-    cb(null, data)
+    res.status = 0
+    cb(null, res)
   })
 }
 
-// 图片类型接口 --- 从文件获取随机图片类型数据
+// 图片类型接口 --- 从文件获取图片类型数据
 exports.getImgCate = function (cb) {
   fs.readFile(fpath('data/imgCate.json'), 'utf-8', function (err, data) {
     if (err) cb(err)
-    cb(null, data)
+    var res = JSON.parse(data)
+    res.status = 0
+    cb(null, res)
   })
 }
 
@@ -205,6 +258,19 @@ exports.getImgList = function (cateid, cb) {
       oneList.status = 0
       cb(null, oneList)
     }
+  })
+}
+
+// 图片详情接口 --- 从文件获取图片详情数据
+exports.getImgDetail = function (id, cb) {
+  fs.readFile(fpath('data/imgDetail.json'), 'utf-8', function (err, data) {
+    data = JSON.parse(data)
+    var res = {}
+    res.list = data.list.find(item => {
+      return item.id === id
+    })
+    res.status = 0
+    cb(null, res)
   })
 }
 

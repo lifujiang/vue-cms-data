@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:29
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-19 10:43:37
+* @Last Modified time: 2019-03-20 14:50:51
 */
 var Mock = require('mockjs')
 
@@ -24,7 +24,6 @@ Random.extend({
 
 // 获取随机轮播图
 exports.lunbo = Mock.mock({
-  'status': 0,
   'list|3-6': [{
     'id|+1': 1,
     'img': '@img(900x500, lunbo)'
@@ -33,7 +32,6 @@ exports.lunbo = Mock.mock({
 
 // 获取随机新闻数据
 exports.news = Mock.mock({
-  'status': 0,
   'list|25': [{
     'id|+1': 1,
     'title': '@newsTitle()',
@@ -47,7 +45,6 @@ exports.news = Mock.mock({
 
 // 获取所有随机评论数据, 包括新闻评论, 图片评论, 商品评论等
 exports.comment = Mock.mock({
-  'status': 0,
   'cmt_area|95': [{
     'artid|+1': 1,
     'list|40-80': [{
@@ -60,7 +57,6 @@ exports.comment = Mock.mock({
 
 // 随机获取图片类型
 exports.imgCate = Mock.mock({
-  'status': 0,
   'list|7': [{
     'cateid|+1': 1,
     'title': '@ctitle(4)'
@@ -68,8 +64,7 @@ exports.imgCate = Mock.mock({
 })
 
 // 随机获取图片列表
-exports.imgList = Mock.mock({
-  'status': 0,
+exports.img = Mock.mock({
   'cate|7': [{
     'cateid|+1': 1,
     'list|10': [{
@@ -77,24 +72,15 @@ exports.imgList = Mock.mock({
       'title': '@ctitle(24)',
       'img': '@img(350x450, image)',
       'content': '@csentence(120)',
+      'zhaiyao': '@csentence(80)',
       'date': '@datetime()',
       'click': '@integer(20, 10000)'
     }]
   }]
 })
 
-// 随机获取图片信息
-exports.imgInfo = Mock.mock({
-  'status': 0,
-  'list|70': [{
-    'id|+1': 26,
-    'content': '@csentence(40)'
-  }]
-})
-
 // 随机获取图片缩略图
 exports.imgPreview = Mock.mock({
-  'status': 0,
   'list|70': [{
     'id|+1': 26,
     'list': [{

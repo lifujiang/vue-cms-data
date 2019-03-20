@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:21
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-14 14:02:01
+* @Last Modified time: 2019-03-20 14:47:49
 */
 
 // 引入模块
@@ -60,7 +60,7 @@ router.get('/setComment', function (req, res) {
   })
 })
 
-// 获取图片类型数据并永久化
+// 获取图片类型并永久化
 router.get('/setImgCate', function (req, res) {
   HandlerData.setImgCate(function (err, len) {
     if (err) throw err
@@ -68,11 +68,19 @@ router.get('/setImgCate', function (req, res) {
   })
 })
 
-// 获取图片列表数据并永久化
-router.get('/setImgList', function (req, res) {
-  HandlerData.setImgList(function (err, len) {
+// 获取图片数据(图片列表和图片详情)并永久化
+router.get('/setImg', function (req, res) {
+  HandlerData.setImg(function (err, len) {
     if (err) throw err
-    renderPage(res, len, '图片列表')
+    renderPage(res, len, '图片列表与详情')
+  })
+})
+
+// 获取图片缩略图数据并永久化
+router.get('/setImgPreview', function (req, res) {
+  HandlerData.setImgPreview(function (err, len) {
+    if (err) throw err
+    renderPage(res, len, '图片缩略图')
   })
 })
 
@@ -126,6 +134,15 @@ router.get('/getImgCate', function (req, res) {
 router.get('/getImgList', function (req, res) {
   var cateid = req.query.cateid
   HandlerData.getImgList(parseInt(cateid), function (err, data) {
+    if (err) throw err
+    res.send(data)
+  })
+})
+
+// 图片详情接口
+router.get('/getImgDetail', function (req, res) {
+  var id = req.query.id
+  HandlerData.getImgDetail(parseInt(id), function (err, data) {
     if (err) throw err
     res.send(data)
   })
