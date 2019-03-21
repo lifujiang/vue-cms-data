@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:29
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-20 14:50:51
+* @Last Modified time: 2019-03-21 15:01:57
 */
 var Mock = require('mockjs')
 
@@ -81,10 +81,10 @@ exports.img = Mock.mock({
 
 // 随机获取图片缩略图
 exports.imgPreview = Mock.mock({
-  'list|70': [{
+  'imgprev|70': [{
     'id|+1': 26,
-    'list': [{
-      'img': '@img(640x480, imgDetail)'
+    'list|6': [{
+      'src': '@img(640x480, imgPreview)'
     }]
   }]
 })

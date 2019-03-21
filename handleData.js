@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-09 10:50:24
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-20 15:36:47
+* @Last Modified time: 2019-03-21 15:16:10
 */
 
 var fs = require('fs')
@@ -158,6 +158,13 @@ exports.setImg = function (cb) {
 exports.setImgPreview = function (cb) {
   var name = 'imgPreview'
   var data = GetData[name]
+  // 由于 vue-preview 要求缩略图需要有小图
+  // 这里循环遍历最里层的图片地址, 利用 replace 替换尺寸
+  for (const list of data.imgprev) {
+    for (const item of list.list) {
+      item.msrc = item.src.replace('640x480', '112x84')
+    }
+  }
   var err = writeData(name, data)
   if (err) cb(err)
   cb(null, '很长')
@@ -264,11 +271,27 @@ exports.getImgList = function (cateid, cb) {
 // 图片详情接口 --- 从文件获取图片详情数据
 exports.getImgDetail = function (id, cb) {
   fs.readFile(fpath('data/imgDetail.json'), 'utf-8', function (err, data) {
+    if (err) cb(err)
     data = JSON.parse(data)
     var res = {}
     res.list = data.list.find(item => {
       return item.id === id
     })
+    res.status = 0
+    cb(null, res)
+  })
+}
+
+// 图片缩略图接口 --- 从文件获取图片缩略图数据
+exports.getImgPreview = function (id, cb) {
+  fs.readFile(fpath('data/imgPreview.json'), 'utf-8', function (err, data) {
+    if (err) cb(err)
+    data = JSON.parse(data)
+    var res = {}
+    var tempList = data.imgprev.find(item => {
+      return item.id === id
+    })
+    res.list = tempList.list
     res.status = 0
     cb(null, res)
   })

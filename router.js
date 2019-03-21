@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:21
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-20 14:47:49
+* @Last Modified time: 2019-03-21 12:44:36
 */
 
 // 引入模块
@@ -143,6 +143,15 @@ router.get('/getImgList', function (req, res) {
 router.get('/getImgDetail', function (req, res) {
   var id = req.query.id
   HandlerData.getImgDetail(parseInt(id), function (err, data) {
+    if (err) throw err
+    res.send(data)
+  })
+})
+
+// 图片缩略图接口
+router.get('/getImgPreview', function (req, res) {
+  var id = req.query.id
+  HandlerData.getImgPreview(parseInt(id), function (err, data) {
     if (err) throw err
     res.send(data)
   })
