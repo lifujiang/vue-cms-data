@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:29
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-21 15:01:57
+* @Last Modified time: 2019-03-23 02:20:59
 */
 var Mock = require('mockjs')
 
@@ -86,5 +86,19 @@ exports.imgPreview = Mock.mock({
     'list|6': [{
       'src': '@img(640x480, imgPreview)'
     }]
+  }]
+})
+
+// 随机获取商品列表信息
+exports.goods = Mock.mock({
+  'list|24': [{
+    'id|+1': 97,
+    'title': '@csentence(12)',
+    'src': '@img(172x210, goods, white)',
+    'sale_price': '@integer(2300, 2800)',
+    'market_price': '@integer(2900, 3200)',
+    'add_time': '@datetime()',
+    'stock_quantity': '@integer(40, 680)',
+    'goods_num ': 'SD@integer(1000000000, 9999999999)'
   }]
 })

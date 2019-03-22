@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:21
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-21 12:44:36
+* @Last Modified time: 2019-03-23 02:24:56
 */
 
 // 引入模块
@@ -81,6 +81,14 @@ router.get('/setImgPreview', function (req, res) {
   HandlerData.setImgPreview(function (err, len) {
     if (err) throw err
     renderPage(res, len, '图片缩略图')
+  })
+})
+
+// 获取商品列表
+router.get('/setGoods', function (req, res) {
+  HandlerData.setGoods(function (err, len) {
+    if (err) throw err
+    renderPage(res, len, '商品')
   })
 })
 
@@ -164,6 +172,14 @@ router.post('/postComment', function (req, res) {
   HandlerData.postComment(req.body, function (err) {
     if (err) throw err
     res.send({ message: 'ok', status: 0 })
+  })
+})
+
+// 测试所用接口
+router.get('/test', function (req, res) {
+  HandlerData.test(function (err, data) {
+    if (err) throw err
+    res.send(data)
   })
 })
 

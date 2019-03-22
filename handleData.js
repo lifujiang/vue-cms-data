@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-09 10:50:24
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-21 15:16:10
+* @Last Modified time: 2019-03-23 03:08:46
 */
 
 var fs = require('fs')
@@ -170,6 +170,24 @@ exports.setImgPreview = function (cb) {
   cb(null, '很长')
 }
 
+// 商品列表 --- 获取商品列表随机数据
+exports.setGoods = function (cb) {
+  var name = 'goods'
+  var data = GetData[name]
+  var len = data.list.length
+  // 需要提取的对象键数组
+  var goodsListObj = ['id', 'title', 'src', 'sale_price', 'market_price', 'stock_quantity']
+  var goodsDetailObj = ['id', 'title', 'goods_num', 'stock_quantity', 'sale_price', 'market_price']
+  // 提取所需的对象值
+  var goodsListData = spcfObj(goodsListObj, data.list)
+  var err = writeData('goodsList', goodsListData)
+  if (err) cb(err)
+  var goodsDetailData = spcfObj(goodsDetailObj, data.list)
+  err = writeData('goodsDetail', goodsDetailData)
+  if (err) throw err
+  cb(null, '固定为' + len)
+}
+
 /***** 接口 *****/
 
 // 评论接口 --- 获取随机评论数据
@@ -327,4 +345,12 @@ exports.postComment = function (data, cb) {
     // 这里一定要调用回调函数, 否则将出不去了!!!
     cb()
   })
+}
+
+/***** 测试所用数据及接口 *****/
+
+exports.test = function (cb) {
+  var name = 'goods'
+  var data = GetData[name]
+  cb(null, data)
 }
