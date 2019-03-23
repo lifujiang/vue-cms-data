@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-09 10:50:24
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-23 03:08:46
+* @Last Modified time: 2019-03-23 10:19:11
 */
 
 var fs = require('fs')
@@ -170,7 +170,7 @@ exports.setImgPreview = function (cb) {
   cb(null, '很长')
 }
 
-// 商品列表 --- 获取商品列表随机数据
+// 商品 --- 获取商品列表和商品详情随机数据
 exports.setGoods = function (cb) {
   var name = 'goods'
   var data = GetData[name]
@@ -311,6 +311,22 @@ exports.getImgPreview = function (id, cb) {
     })
     res.list = tempList.list
     res.status = 0
+    cb(null, res)
+  })
+}
+
+// 商品列表接口
+exports.getGoodsList = function (pageIndex, cb) {
+  fs.readFile(fpath('data/goodsList.json'), 'utf-8', function (err, data) {
+    if (err) cb(err)
+    data = JSON.parse(data)
+    // 计算每页显示 8 条内容
+    var pageMin = (pageIndex - 1) * 8
+    var pageMax = pageIndex * 8
+    var list = data.list.slice(pageMin, pageMax)
+    var res = {}
+    res.status = 0
+    res.list = list
     cb(null, res)
   })
 }

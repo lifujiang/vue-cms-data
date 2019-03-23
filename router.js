@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:21
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-23 02:24:56
+* @Last Modified time: 2019-03-23 10:20:27
 */
 
 // 引入模块
@@ -160,6 +160,15 @@ router.get('/getImgDetail', function (req, res) {
 router.get('/getImgPreview', function (req, res) {
   var id = req.query.id
   HandlerData.getImgPreview(parseInt(id), function (err, data) {
+    if (err) throw err
+    res.send(data)
+  })
+})
+
+// 商品列表路由
+router.get('/getGoodsList', function (req, res) {
+  var pageIndex = req.query.pageIndex
+  HandlerData.getGoodsList(parseInt(pageIndex), function (err, data) {
     if (err) throw err
     res.send(data)
   })

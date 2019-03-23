@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:29
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-23 02:20:59
+* @Last Modified time: 2019-03-23 12:48:14
 */
 var Mock = require('mockjs')
 
@@ -94,7 +94,7 @@ exports.goods = Mock.mock({
   'list|24': [{
     'id|+1': 97,
     'title': '@csentence(12)',
-    'src': '@img(172x210, goods, white)',
+    'src': '@img(172x210, goods, ffffff)',
     'sale_price': '@integer(2300, 2800)',
     'market_price': '@integer(2900, 3200)',
     'add_time': '@datetime()',
