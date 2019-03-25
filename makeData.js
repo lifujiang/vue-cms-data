@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:29
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-23 12:48:14
+* @Last Modified time: 2019-03-25 13:36:36
 */
 var Mock = require('mockjs')
 
@@ -99,6 +99,16 @@ exports.goods = Mock.mock({
     'market_price': '@integer(2900, 3200)',
     'add_time': '@datetime()',
     'stock_quantity': '@integer(40, 680)',
-    'goods_num ': 'SD@integer(1000000000, 9999999999)'
+    'goods_num': 'SD@integer(1000000000, 9999999999)'
+  }]
+})
+
+// 获取商品轮播图
+exports.goodsSwiper = Mock.mock({
+  'goodsamt|24': [{
+    'id|+1': 97,
+    'list|2-3': [{
+      'img': '@img(165x200, goodsDetail, ffffff)'
+    }]
   }]
 })

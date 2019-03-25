@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-09 10:50:24
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-23 10:19:11
+* @Last Modified time: 2019-03-25 15:18:19
 */
 
 var fs = require('fs')
@@ -177,7 +177,7 @@ exports.setGoods = function (cb) {
   var len = data.list.length
   // 需要提取的对象键数组
   var goodsListObj = ['id', 'title', 'src', 'sale_price', 'market_price', 'stock_quantity']
-  var goodsDetailObj = ['id', 'title', 'goods_num', 'stock_quantity', 'sale_price', 'market_price']
+  var goodsDetailObj = ['id', 'title', 'goods_num', 'stock_quantity', 'sale_price', 'market_price', 'add_time']
   // 提取所需的对象值
   var goodsListData = spcfObj(goodsListObj, data.list)
   var err = writeData('goodsList', goodsListData)
@@ -185,6 +185,16 @@ exports.setGoods = function (cb) {
   var goodsDetailData = spcfObj(goodsDetailObj, data.list)
   err = writeData('goodsDetail', goodsDetailData)
   if (err) throw err
+  cb(null, '固定为' + len)
+}
+
+// 商品轮播图 --- 获取商品轮播图数据
+exports.setGoodsSwiper = function (cb) {
+  var name = 'goodsSwiper'
+  var data = GetData[name]
+  var len = data.goodsamt.length
+  var err = writeData('goodsSwiper', data)
+  if (err) cb(err)
   cb(null, '固定为' + len)
 }
 
@@ -305,11 +315,9 @@ exports.getImgPreview = function (id, cb) {
   fs.readFile(fpath('data/imgPreview.json'), 'utf-8', function (err, data) {
     if (err) cb(err)
     data = JSON.parse(data)
-    var res = {}
-    var tempList = data.imgprev.find(item => {
+    var res = data.imgprev.find(item => {
       return item.id === id
     })
-    res.list = tempList.list
     res.status = 0
     cb(null, res)
   })
@@ -327,6 +335,33 @@ exports.getGoodsList = function (pageIndex, cb) {
     var res = {}
     res.status = 0
     res.list = list
+    cb(null, res)
+  })
+}
+
+// 商品轮播图接口
+exports.getGoodsSwiper = function (id, cb) {
+  fs.readFile(fpath('data/goodsSwiper.json'), 'utf-8', function (err, data) {
+    if (err) cb(err)
+    data = JSON.parse(data)
+    var res = data.goodsamt.find(item => {
+      return item.id === id
+    })
+    res.status = 0
+    cb(null, res)
+  })
+}
+
+// 商品详情接口
+exports.getGoodsDetail = function (id, cb) {
+  fs.readFile(fpath('data/goodsDetail.json'), 'utf-8', function (err, data) {
+    if (err) cb(err)
+    data = JSON.parse(data)
+    var res = {}
+    res.list = data.list.find(item => {
+      return item.id === id
+    })
+    res.status = 0
     cb(null, res)
   })
 }
@@ -366,7 +401,7 @@ exports.postComment = function (data, cb) {
 /***** 测试所用数据及接口 *****/
 
 exports.test = function (cb) {
-  var name = 'goods'
+  var name = 'goodsSwiper'
   var data = GetData[name]
   cb(null, data)
 }

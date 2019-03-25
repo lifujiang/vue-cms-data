@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:21
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-23 10:20:27
+* @Last Modified time: 2019-03-25 13:28:04
 */
 
 // 引入模块
@@ -92,6 +92,14 @@ router.get('/setGoods', function (req, res) {
   })
 })
 
+// 获取商品轮播图
+router.get('/setGoodsSwiper', function (req, res) {
+  HandlerData.setGoodsSwiper(function (err, len) {
+    if(err) throw err
+    renderPage(res, len, '商品轮播图')
+  })
+})
+
 /***** 接口路由 *****/
 
 // 轮播图接口
@@ -165,10 +173,28 @@ router.get('/getImgPreview', function (req, res) {
   })
 })
 
-// 商品列表路由
+// 商品列表接口
 router.get('/getGoodsList', function (req, res) {
   var pageIndex = req.query.pageIndex
   HandlerData.getGoodsList(parseInt(pageIndex), function (err, data) {
+    if (err) throw err
+    res.send(data)
+  })
+})
+
+// 商品轮播图接口
+router.get('/getGoodsSwiper', function (req, res) {
+  var id = req.query.id
+  HandlerData.getGoodsSwiper(parseInt(id), function (err, data) {
+    if (err) throw err
+    res.send(data)
+  })
+})
+
+// 商品详情接口
+router.get('/getGoodsDetail', function (req, res) {
+  var id = req.query.id
+  HandlerData.getGoodsDetail(parseInt(id), function (err, data) {
     if (err) throw err
     res.send(data)
   })
