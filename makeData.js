@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:29
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-25 13:36:36
+* @Last Modified time: 2019-03-27 12:24:09
 */
 var Mock = require('mockjs')
 
@@ -45,7 +45,7 @@ exports.news = Mock.mock({
 
 // 获取所有随机评论数据, 包括新闻评论, 图片评论, 商品评论等
 exports.comment = Mock.mock({
-  'cmt_area|95': [{
+  'cmt_area|119': [{
     'artid|+1': 1,
     'list|40-80': [{
       'user_name': '@cname',
@@ -89,24 +89,30 @@ exports.imgPreview = Mock.mock({
   }]
 })
 
-// 随机获取商品列表信息
+// 随机获取商品信息
 exports.goods = Mock.mock({
   'list|24': [{
-    'id|+1': 97,
+    'id|+1': 96,
     'title': '@csentence(12)',
     'src': '@img(172x210, goods, ffffff)',
     'sale_price': '@integer(2300, 2800)',
     'market_price': '@integer(2900, 3200)',
     'add_time': '@datetime()',
     'stock_quantity': '@integer(40, 680)',
-    'goods_num': 'SD@integer(1000000000, 9999999999)'
+    'goods_num': 'SD@integer(1000000000, 9999999999)',
+    'content': `<p>@csentence(259)</p>
+                <p><img src="@img(640x480, recommend)"></p>
+                <p><img src="@img(640x480, recommend)"></p>
+                <p><img src="@img(640x480, recommend)"></p>
+                <p><img src="@img(640x480, recommend)"></p>
+                <p><img src="@img(640x480, recommend)"></p>`
   }]
 })
 
 // 获取商品轮播图
 exports.goodsSwiper = Mock.mock({
   'goodsamt|24': [{
-    'id|+1': 97,
+    'id|+1': 96,
     'list|2-3': [{
       'img': '@img(165x200, goodsDetail, ffffff)'
     }]

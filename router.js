@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-07 22:45:21
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-25 13:28:04
+* @Last Modified time: 2019-03-27 11:59:11
 */
 
 // 引入模块
@@ -195,6 +195,15 @@ router.get('/getGoodsSwiper', function (req, res) {
 router.get('/getGoodsDetail', function (req, res) {
   var id = req.query.id
   HandlerData.getGoodsDetail(parseInt(id), function (err, data) {
+    if (err) throw err
+    res.send(data)
+  })
+})
+
+// 商品图文详情接口
+router.get('/getGoodsRCMD', function (req, res) {
+  var id = req.query.id
+  HandlerData.getGoodsRCMD(parseInt(id), function (err, data) {
     if (err) throw err
     res.send(data)
   })

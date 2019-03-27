@@ -2,7 +2,7 @@
 * @Author: shen
 * @Date:   2019-03-09 10:50:24
 * @Last Modified by:   xvvx
-* @Last Modified time: 2019-03-25 15:18:19
+* @Last Modified time: 2019-03-27 12:00:33
 */
 
 var fs = require('fs')
@@ -178,12 +178,16 @@ exports.setGoods = function (cb) {
   // 需要提取的对象键数组
   var goodsListObj = ['id', 'title', 'src', 'sale_price', 'market_price', 'stock_quantity']
   var goodsDetailObj = ['id', 'title', 'goods_num', 'stock_quantity', 'sale_price', 'market_price', 'add_time']
+  var goodsRCMDObj = ['id', 'title', 'content']
   // 提取所需的对象值
   var goodsListData = spcfObj(goodsListObj, data.list)
   var err = writeData('goodsList', goodsListData)
   if (err) cb(err)
   var goodsDetailData = spcfObj(goodsDetailObj, data.list)
   err = writeData('goodsDetail', goodsDetailData)
+  if (err) throw err
+  var goodsRCMDData = spcfObj(goodsRCMDObj, data.list)
+  err = writeData('goodsRCMD', goodsRCMDData)
   if (err) throw err
   cb(null, '固定为' + len)
 }
@@ -366,6 +370,20 @@ exports.getGoodsDetail = function (id, cb) {
   })
 }
 
+// 商品图文详情接口
+exports.getGoodsRCMD = function (id, cb) {
+  fs.readFile(fpath('data/goodsRCMD.json'), 'utf-8', function (err, data) {
+    if (err) cb(err)
+    data = JSON.parse(data)
+    var res = {}
+    res.list = data.list.find(item => {
+      return item.id === id
+    })
+    res.status = 0
+    cb(null, res)
+  })
+}
+
 /***** 其他 *****/
 
 // 提交评论
@@ -401,7 +419,7 @@ exports.postComment = function (data, cb) {
 /***** 测试所用数据及接口 *****/
 
 exports.test = function (cb) {
-  var name = 'goodsSwiper'
+  var name = 'goodsrcmd'
   var data = GetData[name]
   cb(null, data)
 }
